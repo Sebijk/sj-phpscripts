@@ -58,6 +58,7 @@ $COOKIE_ARRAYS = print_r($_COOKIE, true);
 $COOKIE_ARRAYS = nl2br($COOKIE_ARRAYS);
 
 $PHP_MODULES = get_loaded_extensions();
+if(function_exists('gd_info')) $gd_info = gd_info();
 
 // Magic Quotes
 if (get_magic_quotes_runtime()) $magic_quotes_runtime = "on";
@@ -145,9 +146,9 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
 <h1><a href="<?php echo $SCRIPT_NAME; ?>?show=credits">PHP Credits</a></h1>
 <hr>
 
-<h2><a name="module_apache2handler">Apache Infos</a></h2>
+<h2><a name="module_apache2handler">Server Infos</a></h2>
 <table border="0" cellpadding="3" width="600">
-<tr><td class="e">Apache Version </td><td class="v"><?php echo $SERVER_SOFTWARE; ?></td></tr>
+<tr><td class="e">Server Version </td><td class="v"><?php echo $SERVER_SOFTWARE; ?></td></tr>
 </table><br />
 
 
@@ -167,14 +168,14 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
 <tr><td class="e">safe_mode</td><td class="v"><?php echo $safe_mode; ?></td></tr>
 <tr><td class="e">sendmail_path</td><td class="v"><?php echo $sendmail_path; ?></td></tr>
 </table><br />
-<h2>Komplette Ausgabe (mit print_f)</h2>
+<h2>Komplette Ausgabe</h2>
 <table border="0" cellpadding="2" width="600">
-<tr><td class="v">
+<tr class="h"><th>Directive</th><th>Local Value</th><th>Master Value</th></tr>
 <?php
-$ausgabe = print_r(ini_get_all(), true);
-echo nl2br($ausgabe);
-?>
-</td></tr>
+$ausgabe = ini_get_all();
+foreach ($ausgabe as $ausgabe_key => $ausgabe_arr) {
+    echo '<tr><td class="e">'.$ausgabe_key.'</td><td class="v">'.$ausgabe_arr['local_value'].'</td><td class="v">'.$ausgabe_arr['global_value'].'</td></tr>';
+} ?>
 </table><br />
 
 
@@ -245,7 +246,17 @@ while(list($key, $val) = each($PHP_MODULES)) {
 }
 ?>
 </tbody></table><br />
+
+ <?php } ?>
+<?php if($gd_info) { ?>
+<h2>gd</h2>
+<table border="0" cellpadding="3" width="600">
+<?php foreach($gd_info as $gd_key => $gd_value) {
+echo '<tr><td class="e">'.$gd_key.'</td><td class="v">'.$gd_value.'</td></tr>';
+} ?>
+ </table><br />
 <?php } ?>
+
 
 <h2>Environment</h2>
 <table border="0" cellpadding="3" width="600">
